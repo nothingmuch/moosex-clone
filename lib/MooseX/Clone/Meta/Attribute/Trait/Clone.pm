@@ -83,7 +83,7 @@ sub clone_object_value {
 	}
 }
 
-sub clone_value_ref {
+sub clone_ref_value {
     my ( $self, $ref, @args ) = @_;
     $self->clone_visitor->visit($ref);
 }

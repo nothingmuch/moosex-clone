@@ -15,7 +15,8 @@ use Scalar::Util qw(refaddr);
 
     has foo => (
         traits => [qw(Clone)],
-        isa => "Foo",
+        clone_refs => 1,
+        isa => "Foo|HashRef",
         is  => "rw",
         default => sub { Foo->new },
     );
@@ -23,6 +24,7 @@ use Scalar::Util qw(refaddr);
     has same => (
         isa => "Foo",
         is  => "rw",
+        clone_refs => 1,
         default => sub { Foo->new },
     );
 
@@ -79,4 +81,14 @@ isnt( refaddr($bar->foo), refaddr($copy->foo), "copy" );
 is( refaddr($bar->same), refaddr($copy->same), "copy" );
 
 is( $copy->clone( foo => { some_attr => "laaa" } )->foo->some_attr, "laaa", "Value carried over to recursive call to clone" );
+
+my $hash = { foo => Foo->new };
+my $hash_copy = Bar->new( foo => $hash )->clone->foo;
+
+isnt( refaddr($hash), refaddr($hash_copy), "hash copied" );
+is_deeply( [ sort keys %$hash ], [ sort keys %$hash_copy ], "hash keys exist in clone" );
+isa_ok($hash_copy->{foo}, "Foo");
+isnt( refaddr($hash->{foo}), refaddr($hash_copy->{foo}), "foo inside hash cloned too" );
+is( $hash_copy->{foo}->copy_number, 1, "copy number" );
+
 
