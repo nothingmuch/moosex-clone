@@ -1,0 +1,6 @@
+0.02
+	- Add deep cloning support using Data::Visitor
+	- Add the NoClone trait
+
+0.01
+	- Initial release
