@@ -9,16 +9,22 @@ use Carp qw(croak);
 
 sub Moose::Meta::Attribute::Custom::Trait::Clone::register_implementation { __PACKAGE__ }
 
-has clone_refs => (
+has clone_only_objects => (
 	isa => "Bool",
 	is  => "rw",
-	default => 0,
+    default => 0,
 );
 
 has clone_visitor => (
     isa => "Data::Visitor",
     is  => "rw",
     lazy_build => 1,
+);
+
+has clone_visitor_config => (
+    isa => "HashRef",
+    is  => "ro",
+    default => sub { { } },
 );
 
 sub _build_clone_visitor {
@@ -29,6 +35,7 @@ sub _build_clone_visitor {
     Data::Visitor::Callback->new(
         object => sub { $self->clone_object_value($_[1]) },
         tied_as_objects => 1,
+        %{ $self->clone_visitor_config },
     );
 }
 
@@ -46,8 +53,8 @@ sub clone_value_data {
     if ( blessed($value) ) {
 		$self->clone_object_value($value, @args);
     } else {
-		if ( $self->clone_refs ) {
-			$self->clone_ref_value($value, @args);
+		unless ( $self->clone_only_objects ) {
+			$self->clone_any_value($value, @args);
 		} else {
 			my %args = @args;
 			return exists $args{init_arg}
@@ -83,9 +90,9 @@ sub clone_object_value {
 	}
 }
 
-sub clone_ref_value {
-    my ( $self, $ref, @args ) = @_;
-    $self->clone_visitor->visit($ref);
+sub clone_any_value {
+    my ( $self, $value, @args ) = @_;
+    $self->clone_visitor->visit($value);
 }
 
 __PACKAGE__
@@ -125,6 +132,39 @@ Deriving this role for your own cloning purposes is encouraged.
 This will allow your fine grained cloning semantics to interact with
 L<MooseX::Clone> in the Right™ way.
 
+=head1 ATTRIBUTES
+
+=over 4
+
+=item clone_only_objects
+
+Whether or not L<Data::Visitor> should be used to clone arbitrary structures.
+Objects found in these structures will be cloned using L<clone_object_value>.
+
+If true then non object values will be copied over in shallow cloning semantics
+(shared reference).
+
+Defaults to false (all reference will be cloned).
+
+=item clone_visitor_config
+
+A hash ref used to construct C<clone_visitor>. Defaults to the empty ref.
+
+This can be used to alter the cloning behavior for non object values.
+
+=item clone_visitor
+
+The L<Data::Visitor::Callback> object that will be used to clone.
+
+It has an C<object> handler that delegates to C<clone_object_value> and sets
+C<tied_as_objects> to true in order to deeply clone tied structures while
+retaining magic.
+
+Only used if C<clone_only_objects> is false and the value of the attribute is
+not an object.
+
+=back
+
 =head1 METHODS
 
 =over 4
@@ -147,6 +187,13 @@ In the future support for deep cloning of simple refs will be added too.
 =item clone_object_value $object, %args
 
 This is the actual workhorse of C<clone_value_data>.
+
+=item clone_any_value $value, %args
+
+Uses C<clone_visitor> to clone all non object values.
+
+Called from C<clone_value_data> if the value is not an object and
+C<clone_only_objects> is false.
 
 =back
 

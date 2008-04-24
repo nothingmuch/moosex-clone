@@ -15,7 +15,6 @@ use Scalar::Util qw(refaddr);
 
     has foo => (
         traits => [qw(Clone)],
-        clone_refs => 1,
         isa => "Foo|HashRef",
         is  => "rw",
         default => sub { Foo->new },
@@ -24,7 +23,6 @@ use Scalar::Util qw(refaddr);
     has same => (
         isa => "Foo",
         is  => "rw",
-        clone_refs => 1,
         default => sub { Foo->new },
     );
 
