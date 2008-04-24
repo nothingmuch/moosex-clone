@@ -99,7 +99,9 @@ to maximize flexibility.
 
 This role provides a C<clone> method that makes use of the low level cloning
 support already in L<Moose> and adds selective deep cloning based on
-introspection on top of that. Attributes marked for 
+introspection on top of that. Attributes with the C<Clone> trait will handle
+cloning of data within the object, typically delegating to the attribute
+value's own C<clone> method.
 
 =head1 METHODS
 
