@@ -14,6 +14,7 @@ WriteMakefile(
 		'Test::use::ok' => 0,
         'Hash::Util::FieldHash::Compat' => 0,
         'Moose' => "0.40",
+        'Data::Visitor' => '0.15',
 	},
 );
 
