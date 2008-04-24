@@ -151,7 +151,7 @@ value, and does not have to be an array or hash reference.
 
 =head1 TODO
 
-Refactor to work in term of a metaclass trait so that C<<meta->clone_object>>
+Refactor to work in term of a metaclass trait so that C<< meta->clone_object >>
 will still do the right thing.
 
 =head1 THANKS
