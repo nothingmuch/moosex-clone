@@ -3,7 +3,7 @@
 package MooseX::Clone;
 use Moose::Role;
 
-our $VERSION = "0.01";
+our $VERSION = "0.02";
 
 use Hash::Util::FieldHash::Compat qw(idhash);
 
