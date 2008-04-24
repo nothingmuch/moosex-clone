@@ -8,6 +8,7 @@ our $VERSION = "0.01";
 use Hash::Util::FieldHash::Compat qw(idhash);
 
 use MooseX::Clone::Meta::Attribute::Trait::Clone;
+use MooseX::Clone::Meta::Attribute::Trait::NoClone;
 
 sub clone {
     my ( $self, %params ) = @_;
@@ -21,7 +22,7 @@ sub clone {
     attr: foreach my $attr ($meta->compute_all_applicable_attributes()) {
         # collect all attrs that can be cloned.
         # if they have args in %params then those are passed to the recursive cloning op
-        if ( $attr->does("MooseX::Clone::Meta::Attribute::Trait::Clone") ) {
+        if ( $attr->does("MooseX::Clone::Meta::Attribute::Trait::Clone::Base") ) {
             push @cloning, $attr;
 
             if ( defined( my $init_arg = $attr->init_arg ) ) {
@@ -68,7 +69,7 @@ MooseX::Clone - Fine grained cloning support for L<Moose> objects.
     package Bar;
     use Moose;
 
-	with qw(MooseX::Clone);
+    with qw(MooseX::Clone);
 
     has foo => (
         isa => "Foo",
@@ -102,6 +103,31 @@ support already in L<Moose> and adds selective deep cloning based on
 introspection on top of that. Attributes with the C<Clone> trait will handle
 cloning of data within the object, typically delegating to the attribute
 value's own C<clone> method.
+
+=head1 TRAITS
+
+=over 4
+
+=item Clone
+
+By default Moose objects are cloned like this:
+
+    bless { %$old }, ref $old;
+
+By specifying the L<Clone> trait for certain attributes custom behavior the
+value's own C<clone> method will be invoked.
+
+By extending this trait you can create custom cloning for certain attributes.
+
+
+By creating C<clone> methods for your objects (e.g. by composing
+L<MooseX::Compile>) you can make them interact with this trait.
+
+=item NoClone
+
+Specifies attributes that should be skipped entirely while cloning.
+
+=back
 
 =head1 METHODS
 

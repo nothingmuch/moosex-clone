@@ -26,6 +26,12 @@ use Scalar::Util qw(refaddr);
         default => sub { Foo->new },
     );
 
+    has floo => (
+        traits => [qw(NoClone)],
+        isa => "Int",
+        is  => "rw",
+    );
+
     package Foo;
     use Moose;
 
@@ -45,11 +51,13 @@ use Scalar::Util qw(refaddr);
 }
 
 
-my $bar = Bar->new;
+my $bar = Bar->new( floo => 3 );
 
 isa_ok( $bar, "Bar" );
 isa_ok( $bar->foo, "Foo" );
 isa_ok( $bar->same, "Foo" );
+
+is( $bar->floo, 3, "explicit init_arg" );
 
 is( $bar->foo->copy_number, 0, "first copy" );
 is( $bar->same->copy_number, 0, "first copy" );
@@ -59,6 +67,8 @@ is( $bar->foo->some_attr, 'def', "default value for other attr" );
 my $copy = $bar->clone;
 
 isnt( refaddr($bar), refaddr($copy), "copy" );
+
+is( $copy->floo, undef, "NoClone" );
 
 is( $copy->foo->copy_number, 1, "copy number incremented" );
 is( $copy->same->copy_number, 0, "not incremented for uncloned attr" );

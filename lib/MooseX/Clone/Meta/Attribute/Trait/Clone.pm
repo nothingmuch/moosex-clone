@@ -3,6 +3,8 @@
 package MooseX::Clone::Meta::Attribute::Trait::Clone;
 use Moose::Role;
 
+with qw(MooseX::Clone::Meta::Attribute::Trait::Clone::Base);
+
 use Carp qw(croak);
 
 sub Moose::Meta::Attribute::Custom::Trait::Clone::register_implementation { __PACKAGE__ }
@@ -12,6 +14,23 @@ has clone_refs => (
 	is  => "rw",
 	default => 0,
 );
+
+has clone_visitor => (
+    isa => "Data::Visitor",
+    is  => "rw",
+    lazy_build => 1,
+);
+
+sub _build_clone_visitor {
+    my $self = shift;
+
+    require Data::Visitor::Callback;
+
+    Data::Visitor::Callback->new(
+        object => sub { $self->clone_object_value($_[1]) },
+        tied_as_objects => 1,
+    );
+}
 
 sub clone_value {
 	my ( $self, $target, $proto, %args ) = @_;
@@ -65,7 +84,8 @@ sub clone_object_value {
 }
 
 sub clone_value_ref {
-	die "TODO, write a Data::Visitor based deep clone for ref types that delegates to clone_value_object i suppose"
+    my ( $self, $ref, @args ) = @_;
+    $self->clone_visitor->visit($ref);
 }
 
 __PACKAGE__
