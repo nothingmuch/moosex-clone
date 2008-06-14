@@ -86,7 +86,7 @@ sub clone_object_value {
 
 		return $value->clone(@clone_args);
 	} else {
-		croak "Cannot recursively clone a retarded object in " . $args{attr}->name . ". Try something better.";
+		croak "Cannot recursively clone a retarded object $value (" . overload::StrVal($value) . ") in " . $args{attr}->name . ". Try something better.";
 	}
 }
 
