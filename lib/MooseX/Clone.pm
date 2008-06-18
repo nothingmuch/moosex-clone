@@ -10,6 +10,8 @@ use Hash::Util::FieldHash::Compat qw(idhash);
 use MooseX::Clone::Meta::Attribute::Trait::Clone;
 use MooseX::Clone::Meta::Attribute::Trait::NoClone;
 
+use namespace::clean -except => [qw(meta)];
+
 sub clone {
     my ( $self, %params ) = @_;
 
