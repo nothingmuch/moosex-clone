@@ -3,9 +3,11 @@
 package MooseX::Clone::Meta::Attribute::Trait::Clone;
 use Moose::Role;
 
-with qw(MooseX::Clone::Meta::Attribute::Trait::Clone::Base);
-
 use Carp qw(croak);
+
+use namespace::clean -except => [qw(meta)];
+
+with qw(MooseX::Clone::Meta::Attribute::Trait::Clone::Base);
 
 sub Moose::Meta::Attribute::Custom::Trait::Clone::register_implementation { __PACKAGE__ }
 

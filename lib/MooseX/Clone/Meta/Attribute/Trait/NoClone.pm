@@ -3,6 +3,8 @@
 package MooseX::Clone::Meta::Attribute::Trait::NoClone;
 use Moose::Role;
 
+use namespace::clean -except => [qw(meta)];
+
 with qw(MooseX::Clone::Meta::Attribute::Trait::Clone::Base);
 
 sub Moose::Meta::Attribute::Custom::Trait::NoClone::register_implementation { __PACKAGE__ }
