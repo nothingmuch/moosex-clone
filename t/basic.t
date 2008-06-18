@@ -32,6 +32,12 @@ use Scalar::Util qw(refaddr);
         is  => "rw",
     );
 
+    has flar => (
+        traits => [qw(Copy)],
+        isa    => "ArrayRef",
+        is     => "rw",
+    );
+
     package Foo;
     use Moose;
 
