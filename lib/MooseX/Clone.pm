@@ -9,6 +9,7 @@ use Hash::Util::FieldHash::Compat qw(idhash);
 
 use MooseX::Clone::Meta::Attribute::Trait::Clone;
 use MooseX::Clone::Meta::Attribute::Trait::NoClone;
+use MooseX::Clone::Meta::Attribute::Trait::Copy;
 
 use namespace::clean -except => [qw(meta)];
 
