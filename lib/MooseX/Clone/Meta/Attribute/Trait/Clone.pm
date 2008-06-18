@@ -40,9 +40,9 @@ sub _build_clone_visitor {
 }
 
 sub clone_value {
-	my ( $self, $target, $proto, %args ) = @_;
+	my ( $self, $target, $proto, @args ) = @_;
 
-	my $clone = $self->clone_value_data( $self->get_value($proto), %args );
+	my $clone = $self->clone_value_data( $self->get_value($proto), @args );
 
 	$self->set_value( $target, $clone );
 }
