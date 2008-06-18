@@ -1,3 +1,7 @@
+0.03
+    - Add the Copy trait (simple 1 level cloning of hashes and array refs)
+    - namespace::clean all over
+
 0.02
 	- Add deep cloning support using Data::Visitor
 	- Add the NoClone trait
