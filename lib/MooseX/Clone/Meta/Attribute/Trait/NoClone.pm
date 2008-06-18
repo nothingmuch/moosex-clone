@@ -39,7 +39,7 @@ not be copied while cloning.
 
 =head1 SYNOPSIS
 
-	with qw(MooseX::Clone);
+    with qw(MooseX::Clone);
 
     has _some_special_thingy => (
         traits => [qw(NoClone)],

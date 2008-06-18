@@ -12,8 +12,8 @@ with qw(MooseX::Clone::Meta::Attribute::Trait::Clone::Base);
 sub Moose::Meta::Attribute::Custom::Trait::Clone::register_implementation { __PACKAGE__ }
 
 has clone_only_objects => (
-	isa => "Bool",
-	is  => "rw",
+    isa => "Bool",
+    is  => "rw",
     default => 0,
 );
 
@@ -42,56 +42,56 @@ sub _build_clone_visitor {
 }
 
 sub clone_value {
-	my ( $self, $target, $proto, @args ) = @_;
+    my ( $self, $target, $proto, @args ) = @_;
 
     return unless $self->has_value($proto);
 
-	my $clone = $self->clone_value_data( $self->get_value($proto), @args );
+    my $clone = $self->clone_value_data( $self->get_value($proto), @args );
 
-	$self->set_value( $target, $clone );
+    $self->set_value( $target, $clone );
 }
 
 sub clone_value_data {
     my ( $self, $value, @args ) = @_;
 
     if ( blessed($value) ) {
-		$self->clone_object_value($value, @args);
+        $self->clone_object_value($value, @args);
     } else {
-		unless ( $self->clone_only_objects ) {
-			$self->clone_any_value($value, @args);
-		} else {
-			my %args = @args;
-			return exists $args{init_arg}
-				? $args{init_arg} # taken as a literal value
-				: $value;
-		}
+        unless ( $self->clone_only_objects ) {
+            $self->clone_any_value($value, @args);
+        } else {
+            my %args = @args;
+            return exists $args{init_arg}
+            ? $args{init_arg} # taken as a literal value
+            : $value;
+        }
     }
 }
 
 sub clone_object_value {
-	my ( $self, $value, %args ) = @_;
+    my ( $self, $value, %args ) = @_;
 
-	if ( $value->can("clone") ) {
-		my @clone_args;
+    if ( $value->can("clone") ) {
+        my @clone_args;
 
-		if ( exists $args{init_arg} ) {
-			my $init_arg = $args{init_arg};
+        if ( exists $args{init_arg} ) {
+            my $init_arg = $args{init_arg};
 
-			if ( ref $init_arg ) {
-				if ( ref $init_arg eq 'HASH' )  { @clone_args = %$init_arg }
-				elsif ( ref $init_arg eq 'ARRAY' ) { @clone_args = @$init_arg }
-				else {
-					croak "Arguments to a sub clone should be given in a hash or array reference";
-				}
-			} else {
-				croak "Arguments to a sub clone should be given in a hash or array reference";
-			}
-		}
+            if ( ref $init_arg ) {
+                if ( ref $init_arg eq 'HASH' )  { @clone_args = %$init_arg }
+                elsif ( ref $init_arg eq 'ARRAY' ) { @clone_args = @$init_arg }
+                else {
+                    croak "Arguments to a sub clone should be given in a hash or array reference";
+                }
+            } else {
+                croak "Arguments to a sub clone should be given in a hash or array reference";
+            }
+        }
 
-		return $value->clone(@clone_args);
-	} else {
-		croak "Cannot recursively clone a retarded object $value (" . overload::StrVal($value) . ") in " . $args{attr}->name . ". Try something better.";
-	}
+        return $value->clone(@clone_args);
+    } else {
+        croak "Cannot recursively clone a retarded object $value (" . overload::StrVal($value) . ") in " . $args{attr}->name . ". Try something better.";
+    }
 }
 
 sub clone_any_value {
@@ -114,14 +114,14 @@ trait for deeply cloning attributes.
 
 =head1 SYNOPSIS
 
-	# see MooseX::Clone
+    # see MooseX::Clone
 
-	has foo => (
-		traits => [qw(Clone)],
-		isa => "Something",
-	);
+    has foo => (
+        traits => [qw(Clone)],
+        isa => "Something",
+    );
 
-	$object->clone; # will recursively call $object->foo->clone and set the value properly
+    $object->clone; # will recursively call $object->foo->clone and set the value properly
 
 =head1 DESCRIPTION
 
