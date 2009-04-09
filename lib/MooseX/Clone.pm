@@ -22,7 +22,7 @@ sub clone {
 
     idhash my %clone_args;
 
-    attr: foreach my $attr ($meta->compute_all_applicable_attributes()) {
+    attr: foreach my $attr ($meta->get_all_attributes()) {
         # collect all attrs that can be cloned.
         # if they have args in %params then those are passed to the recursive cloning op
         if ( $attr->does("MooseX::Clone::Meta::Attribute::Trait::Clone::Base") ) {
