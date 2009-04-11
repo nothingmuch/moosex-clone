@@ -8,10 +8,11 @@ our $VERSION = "0.03";
 use Hash::Util::FieldHash::Compat qw(idhash);
 
 use MooseX::Clone::Meta::Attribute::Trait::Clone;
+use MooseX::Clone::Meta::Attribute::Trait::StorableClone;
 use MooseX::Clone::Meta::Attribute::Trait::NoClone;
 use MooseX::Clone::Meta::Attribute::Trait::Copy;
 
-use namespace::clean -except => [qw(meta)];
+use namespace::clean -except => 'meta';
 
 sub clone {
     my ( $self, %params ) = @_;

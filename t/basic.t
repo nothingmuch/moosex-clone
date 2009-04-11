@@ -38,6 +38,11 @@ use Scalar::Util qw(refaddr);
         is     => "rw",
     );
 
+    has blorg => (
+        traits => [qw(StorableClone)],
+        is     => "rw",
+    );
+
     package Foo;
     use Moose;
 
@@ -106,4 +111,12 @@ is( $copy->clone( foo => { some_attr => "laaa" } )->foo->some_attr, "laaa", "Val
     isa_ok($hash_copy->{foo}, "Foo");
     is( refaddr($hash->{foo}), refaddr($hash_copy->{foo}), "foo inside hash not cloned" );
     is( refaddr($hash->{bar}), refaddr($hash_copy->{bar}), "array inside hash not cloned" );
+}
+
+{
+    my $foo = Foo->new;
+    my $foo_copy = Bar->new( blorg => $foo )->clone->blorg;
+
+    isnt( refaddr($foo), refaddr($foo_copy), "foo copied" );
+    is( $foo_copy->copy_number, $foo->copy_number, "but not using ->clone");
 }
