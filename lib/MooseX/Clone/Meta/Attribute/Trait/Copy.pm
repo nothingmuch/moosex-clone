@@ -5,6 +5,8 @@ use Moose::Role;
 
 use Carp qw(croak);
 
+use namespace::clean -except => 'meta';
+
 with qw(MooseX::Clone::Meta::Attribute::Trait::Clone::Base);
 
 sub Moose::Meta::Attribute::Custom::Trait::Copy::register_implementation { __PACKAGE__ }
