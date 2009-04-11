@@ -7,7 +7,7 @@ use Carp qw(croak);
 
 use namespace::clean -except => [qw(meta)];
 
-with qw(MooseX::Clone::Meta::Attribute::Trait::Clone::Base);
+with qw(MooseX::Clone::Meta::Attribute::Trait::Clone::Std);
 
 sub Moose::Meta::Attribute::Custom::Trait::Clone::register_implementation { __PACKAGE__ }
 
@@ -39,16 +39,6 @@ sub _build_clone_visitor {
         tied_as_objects => 1,
         %{ $self->clone_visitor_config },
     );
-}
-
-sub clone_value {
-    my ( $self, $target, $proto, @args ) = @_;
-
-    return unless $self->has_value($proto);
-
-    my $clone = $self->clone_value_data( $self->get_value($proto), @args );
-
-    $self->set_value( $target, $clone );
 }
 
 sub clone_value_data {
