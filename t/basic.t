@@ -34,7 +34,7 @@ use Scalar::Util qw(refaddr);
 
     has flar => (
         traits => [qw(Copy)],
-        isa    => "ArrayRef",
+        isa    => "HashRef",
         is     => "rw",
     );
 
@@ -86,13 +86,24 @@ is( refaddr($bar->same), refaddr($copy->same), "copy" );
 
 is( $copy->clone( foo => { some_attr => "laaa" } )->foo->some_attr, "laaa", "Value carried over to recursive call to clone" );
 
-my $hash = { foo => Foo->new };
-my $hash_copy = Bar->new( foo => $hash )->clone->foo;
+{
+    my $hash = { foo => Foo->new };
+    my $hash_copy = Bar->new( foo => $hash )->clone->foo;
 
-isnt( refaddr($hash), refaddr($hash_copy), "hash copied" );
-is_deeply( [ sort keys %$hash ], [ sort keys %$hash_copy ], "hash keys exist in clone" );
-isa_ok($hash_copy->{foo}, "Foo");
-isnt( refaddr($hash->{foo}), refaddr($hash_copy->{foo}), "foo inside hash cloned too" );
-is( $hash_copy->{foo}->copy_number, 1, "copy number" );
+    isnt( refaddr($hash), refaddr($hash_copy), "hash copied" );
+    is_deeply( [ sort keys %$hash ], [ sort keys %$hash_copy ], "hash keys exist in clone" );
+    isa_ok($hash_copy->{foo}, "Foo");
+    isnt( refaddr($hash->{foo}), refaddr($hash_copy->{foo}), "foo inside hash cloned too" );
+    is( $hash_copy->{foo}->copy_number, 1, "copy number" );
+}
 
+{
+    my $hash = { foo => Foo->new, bar => []  };
+    my $hash_copy = Bar->new( flar => $hash )->clone->flar;
 
+    isnt( refaddr($hash), refaddr($hash_copy), "hash copied" );
+    is_deeply( [ sort keys %$hash ], [ sort keys %$hash_copy ], "hash keys exist in clone" );
+    isa_ok($hash_copy->{foo}, "Foo");
+    is( refaddr($hash->{foo}), refaddr($hash_copy->{foo}), "foo inside hash not cloned" );
+    is( refaddr($hash->{bar}), refaddr($hash_copy->{bar}), "array inside hash not cloned" );
+}

@@ -16,9 +16,6 @@ sub clone_value {
 
     my $clone = exists $args{init_arg} ? $args{init_arg} : $self->_copy_ref($self->get_value($proto));
 
-    warn "orig: " . $self->get_value($proto);
-    warn "clone: " . $clone;
-
     $self->set_value( $target, $clone );
 }
 
