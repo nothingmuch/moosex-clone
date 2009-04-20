@@ -13,8 +13,8 @@ WriteMakefile(
 	PREREQ_PM    => {
 		'Test::use::ok' => 0,
         'Hash::Util::FieldHash::Compat' => 0,
-        'Moose' => "0.40",
-        'Data::Visitor' => '0.15',
+        'Moose' => "0.74",
+        'Data::Visitor' => '0.24',
         'namespace::clean' => '0.08',
 	},
 );
