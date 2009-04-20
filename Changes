@@ -1,3 +1,8 @@
+0.04
+    - update code to call get_all_attributes instead of compute_all_applicable_attributes
+    - more tests
+    - add the StorableClone trait
+
 0.03
     - Add the Copy trait (simple 1 level cloning of hashes and array refs)
     - namespace::clean all over
