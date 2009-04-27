@@ -12,7 +12,7 @@ sub clone_value {
 
     return unless $self->has_value($proto);
 
-    my $clone = $self->clone_value_data( $self->get_value($proto), @args );
+    my $clone = $self->clone_value_data( scalar($self->get_value($proto)), @args );
 
     $self->set_value( $target, $clone );
 }
