@@ -7,7 +7,7 @@ use Carp qw(croak);
 
 use namespace::clean -except => 'meta';
 
-with qw(MooseX::Clone::Meta::Attribute::Trait::Clone::Std);
+with qw(MooseX::Clone::Meta::Attribute::Trait::Clone::Base);
 
 sub Moose::Meta::Attribute::Custom::Trait::Clone::register_implementation { __PACKAGE__ }
 
@@ -41,19 +41,38 @@ sub _build_clone_visitor {
     );
 }
 
+sub clone_value {
+    my ( $self, $target, $proto, @args ) = @_;
+
+    if ( $self->has_value($proto) ) {
+        my $clone = $self->clone_value_data( scalar($self->get_value($proto)), @args );
+
+        $self->set_value( $target, $clone );
+    } else {
+        my %args = @args;
+
+        if ( exists $args{init_arg} ) {
+            $self->set_value( $target, $args{init_arg} );
+        }
+    }
+}
+
 sub clone_value_data {
     my ( $self, $value, @args ) = @_;
 
     if ( blessed($value) ) {
-        $self->clone_object_value($value, @args);
+        return $self->clone_object_value($value, @args);
     } else {
-        unless ( $self->clone_only_objects ) {
-            $self->clone_any_value($value, @args);
+        my %args = @args;
+
+        if ( exists $args{init_arg} ) {
+            return $args{init_arg};
         } else {
-            my %args = @args;
-            return exists $args{init_arg}
-            ? $args{init_arg} # taken as a literal value
-            : $value;
+            unless ( $self->clone_only_objects ) {
+                return $self->clone_any_value($value, @args);
+            } else {
+                return $value;
+            }
         }
     }
 }
@@ -85,7 +104,7 @@ sub clone_object_value {
 }
 
 sub clone_any_value {
-    my ( $self, $value, @args ) = @_;
+    my ( $self, $value, %args ) = @_;
     $self->clone_visitor->visit($value);
 }
 
