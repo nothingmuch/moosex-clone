@@ -1,3 +1,7 @@
+0.05
+    - Fix cloning for attrs when init_arg is passed under Clone trait
+    - auto_deref related fixes (Evan Carroll)
+
 0.04
     - update code to call get_all_attributes instead of compute_all_applicable_attributes
     - more tests
